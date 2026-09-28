@@ -1,0 +1,34 @@
+/* --- drawing / annotation UI --- */
+
+/* draw bar — docked in its own row UNDER the canvas.
+   It used to be `position:absolute; top:12px` inside the stage, which parked
+   it over the top-centre of the video and blocked the drawing area. */
+.inkBar{position:static;display:flex;align-items:center;gap:10px;padding:7px 10px;
+  background:#0a0e17;border:1px solid #26314c;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.35);
+  width:100%;margin-top:10px;max-width:100%;flex-wrap:wrap;justify-content:center}
+.inkBar.dis{opacity:.5;pointer-events:none}
+.inkBarGrp{display:flex;align-items:center;gap:4px;padding-right:10px;border-right:1px solid #1e2739}
+.inkBarGrp:last-child{padding-right:0;border-right:0}
+.inkTool{background:#121826;border:1px solid #26314c;color:#aab2c5;border-radius:8px;padding:5px 8px;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;gap:1px;font-family:inherit;transition:.15s}
+.inkTool:hover{border-color:#ffd60a;color:#ffd60a}
+.inkTool.on{border-color:#ffd60a;color:#ffd60a;background:#332b0d}
+.inkTool.wide{flex-direction:row;font-size:12px;font-weight:600;padding:7px 10px}
+.inkTool.done{border-color:#3f7a4a;color:#6ee79b}
+.inkTool.done:hover{border-color:#6ee79b;color:#6ee79b}
+.inkToolIco{font-size:15px;line-height:1.1}
+.inkToolName{font-size:9px;letter-spacing:.2px;opacity:.72;white-space:nowrap}
+.inkDot{width:19px;height:19px;border-radius:50%;border:2px solid #333;border:2px solid #333;cursor:pointer;padding:0;transition:.15s}
+.inkDot.on{box-shadow:0 0 0 2px #0a0e17,0 0 0 4px #ffd60a;transform:scale(1.12)}
+.inkWd{background:#121826;border:1px solid #26314c;border-radius:7px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.inkWd.on{border-color:#ffd60a;background:#332b0d}
+.inkWd i{display:block;border-radius:50%;background:#ffd60a}
+
+/* draw mode on the canvas: crosshair instead of grab */
+.stage.inkOn{cursor:crosshair}
+.stage.inkOn.pen{cursor:cell}
+
+/* inspector list */
+.inkLyr .inkThumb{width:66px;height:37px;flex:0 0 auto;border-radius:6px;border:1px solid #1a2133;background:#070b13;display:block}
+.inkLyr.sel .inkThumb{border-color:#ffd60a}
+.inkEdit{border:1px solid #26314c;background:#0b101b;border-radius:10px;padding:10px;margin:8px 0 4px}
+.inkEdit .row label{min-width:66px}

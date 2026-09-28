@@ -1,0 +1,9 @@
+.tl{padding:2px 14px 14px}
+.tlTrack{position:relative;height:60px;background:#0b0f19;border:1px solid #1a2133;border-radius:10px;overflow:hidden;user-select:none;touch-action:none}
+.tlBlock{position:absolute;top:6px;bottom:6px;background:#1b2540;border:1px solid #33405e;border-radius:8px;cursor:grab;overflow:hidden;touch-action:none}
+.tlBlock.sel{background:#332b0d;border-color:#ffd60a}
+.tlBlock .lbl{position:absolute;left:9px;top:4px;font-size:11px;font-weight:700;color:#cfd6e4;white-space:nowrap;pointer-events:none}
+.tlBlock .tm{position:absolute;left:9px;bottom:3px;font-size:10px;color:#8b94a8;pointer-events:none;font-variant-numeric:tabular-nums}
+.hz{position:absolute;top:0;bottom:0;width:12px;cursor:ew-resize}
+.hzl{left:0}.hzr{right:0}
+.tlPlay{position:absolute;top:0;bottom:0;width:2px;background:#ffd60a;box-shadow:0 0 8px #ffd60a;pointer-events:none}

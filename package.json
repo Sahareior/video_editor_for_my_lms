@@ -1,0 +1,25 @@
+{
+  "name": "geneseon-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node test/ink.test.mjs && node test/reducer.test.mjs && node test/aspect.test.mjs",
+    "test:e2e": "node test/inter.mjs && node test/anim.mjs",
+    "test:export": "node test/export-aspect.test.mjs",
+    "test:aspect": "node test/ink-aspect.test.mjs",
+    "test:all": "npm test && npm run test:e2e && npm run test:export && npm run test:aspect"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "playwright": "^1.63.0",
+    "vite": "^5.4.11"
+  }
+}

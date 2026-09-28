@@ -1,0 +1,70 @@
+.scItem{border:1px solid #1d2438;background:#0d1220;border-radius:10px;padding:8px 10px;margin-bottom:7px;cursor:pointer;transition:.15s}
+.scItem:hover{border-color:#33405e}
+.scItem.sel{border-color:#ffd60a;background:#15130a}
+.scTop{display:flex;align-items:center;gap:6px}
+.scName{font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scTime{color:#8b94a8;font-size:11.5px;font-variant-numeric:tabular-nums}
+.mini{background:#111828;border:1px solid #232e48;color:#aab2c5;border-radius:6px;width:23px;height:23px;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;justify-content:center;padding:0}
+.mini:hover{border-color:#ffd60a;color:#ffd60a}
+.tag{font-size:10px;letter-spacing:1px;color:#ffd60a;border:1px solid rgba(255,214,10,.4);border-radius:5px;padding:1px 5px}
+.row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.row label{color:#9aa3b8;font-size:12.5px;min-width:78px}
+.val{min-width:46px;text-align:right;color:#8b94a8;font-variant-numeric:tabular-nums;font-size:12px}
+.inp,.sel{background:#0f1522;border:1px solid #222c44;color:#e8ecf5;border-radius:8px;padding:6px 9px;font-family:inherit;font-size:13px}
+.inp{width:82px}
+.inpT{flex:1;width:auto}
+.sel{flex:1}
+input[type=number]{font-variant-numeric:tabular-nums}
+.chipRow{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.chip{background:#101725;border:1px solid #26314c;color:#aab2c5;border-radius:999px;padding:3px 11px;font-size:12px;cursor:pointer;font-weight:600;font-family:inherit}
+.chip.on{background:#332b0d;border-color:#ffd60a;color:#ffd60a}
+.lineBox{border:1px solid #1d2438;border-radius:10px;padding:10px;margin-bottom:10px;background:#0d1220}
+.hint{color:#6f7890;font-size:12px;line-height:1.6;margin:6px 0}
+.hint b{color:#9aa3b8}
+.thumb{width:100%;max-height:110px;object-fit:cover;border-radius:10px;border:1px solid #1d2438;display:block;margin-bottom:8px}
+.swatch{width:36px;height:28px;padding:0;border:1px solid #222c44;border-radius:6px;background:none;cursor:pointer}
+
+/* --- keyframe UI --- */
+.btn.sel{border-color:#ffd60a;color:#ffd60a;background:#332b0d}
+.kfStrip{position:relative;height:22px;margin:8px 0 10px;background:#0a0e17;border:1px solid #1a2133;border-radius:6px;overflow:hidden}
+.kfDot{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:#1b2540;border:1.5px solid #33405e;color:#aab2c5;font-size:10px;font-weight:700;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;line-height:1}
+.kfDot:hover{border-color:#ffd60a;color:#ffd60a}
+.kfDot.sel{background:#ffd60a;color:#0a0e17;border-color:#ffd60a;box-shadow:0 0 0 3px rgba(255,214,10,.18)}
+.kfDot.live::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px dashed rgba(255,214,10,.5);animation:kfpulse 1.4s infinite}
+@keyframes kfpulse{50%{transform:scale(1.15);opacity:.5}}
+.kfPlay{position:absolute;top:0;bottom:0;width:2px;background:#ffd60a;box-shadow:0 0 6px #ffd60a;pointer-events:none}
+.kfEditor{background:#0a0e17;border:1px solid #1a2133;border-radius:8px;padding:10px;margin-top:4px;margin-bottom:10px}
+.kfEditor .row{margin-bottom:6px}
+.kfEditor .row:last-child{margin-bottom:0}
+.tag.blk{color:#7f8798;border-color:#2a3247}
+
+/* --- media bin (left) --- */
+.binGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:9px}
+.binItem{position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:1px solid #1d2438;background:#0d1220;cursor:pointer}
+.binItem:hover{border-color:#ffd60a}
+.binItem img{width:100%;height:100%;object-fit:cover;display:block}
+.binAdd,.binDel{position:absolute;top:3px;width:19px;height:19px;border-radius:5px;border:1px solid rgba(255,255,255,.16);
+  background:rgba(6,9,16,.82);color:#e8ecf5;font-size:11px;line-height:1;cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:.12s}
+.binAdd{right:3px;color:#ffd60a}
+.binDel{left:3px;color:#ff9b9b}
+.binItem:hover .binAdd,.binItem:hover .binDel,.binAdd:focus,.binDel:focus{opacity:1}
+
+/* --- layer stack (right inspector) --- */
+.lyr{border:1px solid #1d2438;background:#0d1220;border-radius:10px;padding:8px 9px;margin-bottom:7px;cursor:pointer;transition:.15s}
+.lyr:hover{border-color:#33405e}
+.lyr.sel{border-color:#ffd60a;background:#15130a}
+.lyrMain{display:flex;gap:9px;align-items:center}
+.lyrThumb{width:62px;height:38px;flex:none;border-radius:6px;overflow:hidden;background:#000;border:1px solid #232e48}
+.lyrThumb img{width:100%;height:100%;object-fit:cover;display:block}
+.lyrBlack{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:15px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+.lyrInfo{flex:1;min-width:0}
+.lyrName{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lyrIdx{color:#7f8798;font-weight:600;font-size:11px}
+.lyrSub{color:#8b94a8;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.lyrBtns{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+.lyrBtns .mini{width:26px;height:24px;font-size:12px;font-family:inherit,"Apple Symbols","Segoe UI Symbol","Noto Sans Symbols 2",sans-serif}
+.lyrEdit{margin-top:9px;padding-top:8px;border-top:1px solid #1d2438}
+.lyrEdit .row{margin-bottom:6px}
+.lyrEdit .row:last-child{margin-bottom:0}
