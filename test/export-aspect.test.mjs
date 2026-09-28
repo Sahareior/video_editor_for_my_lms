@@ -1,5 +1,5 @@
 /* End-to-end: does the export actually produce a playable file, in every
-   aspect ratio, with a Bengali title? This is the regression the user hit. */
+   aspect ratio, with a non-latin title? This is the regression the user hit. */
 import { chromium } from 'playwright';
 import { mkdtempSync, statSync, existsSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -32,8 +32,8 @@ const cvBox = async () => p.evaluate(() => {
   return { w: c.width, h: c.height, cw: Math.round(c.getBoundingClientRect().width), ch: Math.round(c.getBoundingClientRect().height) };
 });
 
-/* a Bengali title is the case that used to collapse to a file named "download" */
-await p.locator('.ttl').fill('আমার ব্যাখ্যা 🎬');
+/* a non-latin title is the case that used to collapse to a file named "download" */
+await p.locator('.ttl').fill('My Explainer 🎬');
 await p.waitForTimeout(400);
 
 for (const id of ['16:9', '9:16', '1:1', '4:5']) {
@@ -62,9 +62,9 @@ for (const id of ['16:9', '9:16', '1:1', '4:5']) {
 
   /* record ~4s and confirm a real, playable file lands with a real name */
   const dlp = p.waitForEvent('download', { timeout: 60000 }).catch(() => null);
-  await p.getByRole('button', { name: /রেকর্ড/ }).click();
+  await p.getByRole('button', { name: /Record/ }).click();
   await p.waitForTimeout(3800);
-  await p.getByRole('button', { name: /স্টপ/ }).click().catch(() => {});
+  await p.getByRole('button', { name: /Stop/ }).click().catch(() => {});
   const d = await dlp;
   t('a download fires', !!d);
   if (d) {

@@ -16,7 +16,7 @@ function circuitCanvas() {
   const tri = (x, y) => { g.beginPath(); g.moveTo(x - 34, y - 30); g.lineTo(x + 32, y); g.lineTo(x - 34, y + 30); g.closePath(); g.fill(); };
   const bub = (x, y) => { g.beginPath(); g.arc(x, y, 9, 0, 7); g.fill(); g.fillStyle = '#ece9e1'; g.beginPath(); g.arc(x, y, 4.5, 0, 7); g.fill(); g.fillStyle = '#2b2b31'; };
   const lab = (t, x, y, s, col) => { g.fillStyle = col || '#2b2b31'; g.font = 'italic 700 ' + s + 'px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(t, x, y); };
-  const bn = (t, x, y, s) => { g.fillStyle = '#3c3c44'; g.font = '600 ' + s + 'px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(t, x, y); };
+  const cap = (t, x, y, s) => { g.fillStyle = '#3c3c44'; g.font = '600 ' + s + 'px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(t, x, y); };
   wire([[150, 186], [927, 186]]); wire([[150, 486], [705, 486]]);
   wire([[285, 486], [285, 585], [316, 585]]); wire([[150, 640], [440, 640], [440, 609], [457, 609]]);
   wire([[398, 585], [430, 585], [430, 561], [457, 561]]);
@@ -33,7 +33,7 @@ function circuitCanvas() {
   arr(990, 635, 1072); arr(990, 680, 1072); arr(990, 725, 1072); arr(1390, 660, 1470); arr(1390, 705, 1470);
   lab('A', 120, 186, 40); lab('B', 120, 486, 40); lab('C', 120, 640, 40);
   lab('F', 1462, 250, 44, '#8a2c2c'); lab('P', 826, 562, 34, '#8a2c2c'); lab('Q', 1258, 250, 30, '#ece9e1');
-  bn('চিত্র-১', 430, 830, 34); bn('চিত্র-২', 1230, 795, 30);
+  cap('FIGURE 1', 430, 830, 34); cap('FIGURE 2', 1230, 795, 30);
   _c = c;
   return c;
 }

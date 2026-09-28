@@ -7,14 +7,14 @@ p.on('console', m => { if (m.type() === 'error' && !/ERR_CERT/.test(m.text())) e
 await p.goto('http://localhost:4173/', { waitUntil: 'networkidle' });
 await p.waitForTimeout(2000);
 
-await p.getByRole('button', { name: /ড্র মোড/ }).first().click();
+await p.getByRole('button', { name: /Draw mode/ }).first().click();
 await p.waitForTimeout(400);
 const bb = await p.locator('canvas.stage').boundingBox();
 const at = (fx, fy) => ({ x: bb.x + bb.width * fx, y: bb.y + bb.height * fy });
 
 // one big red circle, anim type = draw, so we can count revealed arc
-await p.getByTitle('তির').click();               // placeholder to switch tool
-await p.getByTitle('বৃত্ত/এলিপ্স').click();
+await p.getByTitle('Arrow').click();               // placeholder to switch tool
+await p.getByTitle('Ellipse').click();
 await p.locator('.inkBar .inkDot').nth(1).click(); // red
 let s = at(0.25, 0.25), e = at(0.75, 0.85);
 await p.mouse.move(s.x, s.y); await p.mouse.down();

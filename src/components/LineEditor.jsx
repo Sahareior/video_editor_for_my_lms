@@ -22,13 +22,13 @@ export default function LineEditor({ sceneId, line, index }) {
         ))}
       </div>
       <SliderRow label="Size" v={+line.size} min={24} max={200} step={1} set={v => upd({ size: v })} />
-      <SliderRow label="Y পজিশন" v={+line.y} min={0.05} max={0.95} step={0.005} set={v => upd({ y: v })} />
+      <SliderRow label="Y position" v={+line.y} min={0.05} max={0.95} step={0.005} set={v => upd({ y: v })} />
       <SliderRow label="Delay" v={+line.delay || 0} min={0} max={4} step={0.05} set={v => upd({ delay: v })} />
-      <div className="row"><label>রং</label>
+      <div className="row"><label>Colour</label>
         <select className="sel" value={line.color || 'white'} onChange={e => upd({ color: e.target.value })}>
           <option value="accent">Accent</option>
-          <option value="white">সাদা</option>
-          <option value="custom">কাস্টম…</option>
+          <option value="white">White</option>
+          <option value="custom">Custom…</option>
         </select>
         {line.color === 'custom' && (
           <input type="color" className="swatch" value={line.custom || '#ffffff'}
@@ -37,12 +37,12 @@ export default function LineEditor({ sceneId, line, index }) {
       </div>
       <label className="chk">
         <input type="checkbox" checked={!!line.plate} onChange={e => upd({ plate: e.target.checked })} />
-        প্লেট (ব্যাকগ্রাউন্ড ব্যাজ)
+        Plate (background badge)
       </label>
       <label className="chk">
         <input type="checkbox" checked={line.outline === undefined ? true : !!line.outline}
           onChange={e => upd({ outline: e.target.checked })} />
-        আউটলাইন (ছবির উপরেও পড়া যায়)
+        Outline (readable over images)
       </label>
     </div>
   );

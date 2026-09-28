@@ -28,11 +28,11 @@ const centroidY = () => p.evaluate(() => {
   return n ? sy / n : 0;
 });
 
-await p.getByRole('button', { name: /ড্র মোড/ }).first().click();
+await p.getByRole('button', { name: /Draw mode/ }).first().click();
 await p.waitForTimeout(400);
 
 console.log('\ncreate');
-await p.getByTitle('আয়তাক').click();
+await p.getByTitle('Rectangle').click();
 await drag(at(0.2, 0.2), at(0.5, 0.5));
 t('rect drawn', await rows() === 1);
 await drag(at(0.55, 0.55), at(0.85, 0.85));
@@ -57,7 +57,7 @@ await p.keyboard.press('Control+z'); await p.waitForTimeout(400);
 t('undo brought it back', await rows() === 1);
 
 console.log('\nselect tool: move');
-await p.getByTitle('নির্বাচন').click(); await p.waitForTimeout(250);
+await p.getByTitle('Select').click(); await p.waitForTimeout(250);
 const y0 = await centroidY();
 await drag(at(0.5, 0.35), at(0.5, 0.8), 14);
 const y1 = await centroidY();
@@ -73,7 +73,7 @@ console.log('\nshift constrains (blank stage, one stroke at a time)');
 // pixel measurement can only be seeing ink
 await p.locator('.colL input.inpT').last().fill('');          // blank the watermark
 await p.waitForTimeout(300);
-const delLayer = p.locator('.colR .lyr').first().locator('button[title="লেয়ার মুছে ফেলো"]');
+const delLayer = p.locator('.colR .lyr').first().locator('button[title="Delete layer"]');
 if (await delLayer.count()) { await delLayer.click(); await p.waitForTimeout(400); }
 while (await p.locator('.lineBox').count()) {
   await p.locator('.lineBox button.mini').last().click();     // ✕ on each text line
@@ -81,7 +81,7 @@ while (await p.locator('.lineBox').count()) {
 }
 const dim = p.locator('.colR input[type=range]').last();
 await dim.fill('0'); await p.waitForTimeout(300);
-const clearAll = async () => { while (await rows() > 0) { await p.locator('.inkLyr').first().locator('button[title="মুছে ফেলো"]').click(); await p.waitForTimeout(200); } };
+const clearAll = async () => { while (await rows() > 0) { await p.locator('.inkLyr').first().locator('button[title="Delete"]').click(); await p.waitForTimeout(200); } };
 await clearAll();
 const dims = async () => p.evaluate(() => {
   const cv = document.querySelector('canvas.stage');
@@ -95,7 +95,7 @@ const dims = async () => p.evaluate(() => {
   }
   return x1 < 0 ? null : { w: x1 - x0, h: y1 - y0 };
 });
-await p.getByTitle('আয়তাক').click(); await p.waitForTimeout(150);
+await p.getByTitle('Rectangle').click(); await p.waitForTimeout(150);
 await drag(at(0.2, 0.2), at(0.6, 0.3), 10);
 const free = await dims();
 await clearAll();
@@ -120,20 +120,20 @@ await p.locator('.inkEdit input.inpT').first().fill('ZZZ');
 await p.waitForTimeout(400);
 const nameOf = async (i) => (await p.locator('.inkLyr .lyrName').nth(i).textContent()).replace(/#\d+/, '').trim();
 const before0 = await nameOf(0), before1 = await nameOf(1);
-await p.locator('.inkLyr').first().locator('button[title="নিচে"]').click();
+await p.locator('.inkLyr').first().locator('button[title="Move down"]').click();
 await p.waitForTimeout(400);
 const after0 = await nameOf(0), after1 = await nameOf(1);
 t('↓ swapped the stack (' + before0 + '/' + before1 + ' → ' + after0 + '/' + after1 + ')', after0 === before1 && after1 === before0);
 
-await p.locator('.inkLyr').first().locator('button[title="লুকাও"]').click();
+await p.locator('.inkLyr').first().locator('button[title="Hide"]').click();
 await p.waitForTimeout(400);
 const sub = await p.locator('.lyrSub').first().textContent();
-t('hidden row says লুকানো (' + JSON.stringify(sub) + ')', /লুকানো/.test(sub));
-await p.locator('.inkLyr').first().locator('button[title="দেখাও"]').click();
+t('hidden row says Hidden (' + JSON.stringify(sub) + ')', /Hidden/.test(sub));
+await p.locator('.inkLyr').first().locator('button[title="Show"]').click();
 await p.waitForTimeout(400);
-t('shown again', !/লুকানো/.test(await p.locator('.lyrSub').first().textContent()));
+t('shown again', !/Hidden/.test(await p.locator('.lyrSub').first().textContent()));
 const n = await rows();
-await p.locator('.inkLyr').first().locator('button[title="মুছে ফেলো"]').click();
+await p.locator('.inkLyr').first().locator('button[title="Delete"]').click();
 await p.waitForTimeout(300);
 t('✕ removed one', await rows() === n - 1);
 

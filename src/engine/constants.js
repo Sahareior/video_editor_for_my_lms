@@ -17,7 +17,7 @@ export function setStage(w, h) {
 }
 
 export const KSTYLES = ['pop', 'slide', 'wave', 'type', 'blast', 'rise'];
-export const FONT = '"Hind Siliguri", sans-serif';
+export const FONT = '"Inter", sans-serif';
 export const fontF = (s) => `700 ${s}px ${FONT}`;
 
 /* Optical scale for the current stage: 1 on the 1920x1080 reference, ~0.5625

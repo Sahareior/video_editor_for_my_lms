@@ -58,29 +58,29 @@ export default function InkList() {
 
   return (
     <>
-      <div className="sect">✏️ ড্র · অ্যানোটেশন ({annots.length})</div>
+      <div className="sect">✏️ Draw · Annotations ({annots.length})</div>
 
       <div className="row">
         <button className={'btn' + (inkOn ? ' sel' : '')} style={{ flex: 1, justifyContent: 'center' }}
           onClick={() => actions.setInkOn(!inkOn)}>
-          {inkOn ? '✏️ ড্র বন্ধ করো' : '✏️ ড্র মোড'}
+          {inkOn ? '✏️ Turn off draw' : '✏️ Draw mode'}
         </button>
         {annots.length > 0 && (
-          <button className="mini" style={{ width: 'auto', padding: '0 9px' }} title="সব ড্র মুছো"
-            onClick={() => { if (confirm('এই সিনের সব ড্র মুছে যাবে — ঠিক আছে?')) { dispatch({ type: 'annot/clear', id: sc.id }); setSelInkId(null); } }}>🗑</button>
+          <button className="mini" style={{ width: 'auto', padding: '0 9px' }} title="Clear all ink"
+            onClick={() => { if (confirm('This will erase every stroke in this scene — OK?')) { dispatch({ type: 'annot/clear', id: sc.id }); setSelInkId(null); } }}>🗑</button>
         )}
       </div>
 
       {inkOn && (
         <div className="hint">
-          প্রিভিউ ক্যানভাসে সরাসরি <b>আঁকো</b> — ফ্রিহ্যান্ড টুল ফ্রি-হ্যান্ড,
-          বৃত্ত/আয়তাক/তির টুলে <b>ড্র্যাগ</b> করো।
-          <b>Shift</b> = সমান বাঁকা, <b>Alt+ক্লিক</b> = মুছো, <b>Ctrl+Z</b> = ফেরত, <b>Esc</b> = বন্ধ।
+          Draw straight onto the preview canvas — the Freehand tool is free-hand,
+          with the Ellipse/Rectangle/Arrow tools you <b>drag</b>.
+          <b>Shift</b> = square it off, <b>Alt+click</b> = erase, <b>Ctrl+Z</b> = undo, <b>Esc</b> = off.
         </div>
       )}
 
       {!inkOn && annots.length === 0 && (
-        <div className="hint">এই সিনে কোনো ড্র নেই। <b>✏️ ড্র মোড</b> চাপো তারপর প্রিভিউতে আঁকো।</div>
+        <div className="hint">No ink in this scene. Press <b>✏️ Draw mode</b> and draw on the preview.</div>
       )}
 
       {ordered.map(a => {
@@ -95,19 +95,19 @@ export default function InkList() {
                   {toolName(a.tool)} · {Math.round(a.width)}px
                   {' · ' + (ANIM_TYPES.find(t => t.id === (a.anim || {}).type) || ANIM_TYPES[0]).name.split(' ').pop()}
                   {a.loop && ' ↻'}
-                  {a.visible === false && ' · লুকানো'}
+                  {a.visible === false && ' · Hidden'}
                 </div>
               </div>
             </div>
             <div className="lyrBtns">
-              <button className="mini" title="উপরে" onClick={e => { e.stopPropagation(); dispatch({ type: 'annot/move', id: sc.id, annotId: a.id, dir: 1 }); }}>↑</button>
-              <button className="mini" title="নিচে" onClick={e => { e.stopPropagation(); dispatch({ type: 'annot/move', id: sc.id, annotId: a.id, dir: -1 }); }}>↓</button>
-              <button className="mini" title={a.visible === false ? 'দেখাও' : 'লুকাও'}
+              <button className="mini" title="Move up" onClick={e => { e.stopPropagation(); dispatch({ type: 'annot/move', id: sc.id, annotId: a.id, dir: 1 }); }}>↑</button>
+              <button className="mini" title="Move down" onClick={e => { e.stopPropagation(); dispatch({ type: 'annot/move', id: sc.id, annotId: a.id, dir: -1 }); }}>↓</button>
+              <button className="mini" title={a.visible === false ? 'Show' : 'Hide'}
                 style={a.visible === false ? { borderColor: '#8c2f2f', color: '#ff7b7b' } : null}
                 onClick={e => { e.stopPropagation(); upd(a, { visible: a.visible === false }); }}>{a.visible === false ? '○' : '◉'}</button>
-              <button className="mini" title="এই ড্র দেখাও (প্লে চেপে অ্যানিমেশন দেখো)"
+              <button className="mini" title="Preview this stroke (hit play to watch it animate)"
                 onClick={e => { e.stopPropagation(); actions.previewInk(a); }}>▶</button>
-              <button className="mini" title="মুছে ফেলো"
+              <button className="mini" title="Delete"
                 onClick={e => { e.stopPropagation(); dispatch({ type: 'annot/delete', id: sc.id, annotId: a.id }); }}>✕</button>
             </div>
           </div>
@@ -117,12 +117,12 @@ export default function InkList() {
       {sel && (
         <div className="inkEdit" onClick={e => e.stopPropagation()}>
           <div className="row" style={{ marginBottom: 6 }}>
-            <label>নাম</label>
+            <label>Name</label>
             <input className="inp inpT" value={sel.name || ''} onChange={e => upd(sel, { name: e.target.value })} />
           </div>
 
           <div className="row">
-            <label>রঙ</label>
+            <label>Colour</label>
             <div className="chipRow" style={{ margin: 0 }}>
               {INK_COLORS.map(c => (
                 <button key={c} className={'inkDot' + (sel.color === c ? ' on' : '')}
@@ -132,31 +132,31 @@ export default function InkList() {
             </div>
           </div>
 
-          <SliderRow label="মোটা" v={sel.width} min={2} max={48} step={1} set={v => upd(sel, { width: v })} />
+          <SliderRow label="Width" v={sel.width} min={2} max={48} step={1} set={v => upd(sel, { width: v })} />
 
           {(sel.tool === 'ellipse' || sel.tool === 'rect') && (
             <label className="chk">
               <input type="checkbox" checked={!!sel.fill}
                 onChange={e => upd(sel, { fill: e.target.checked ? (sel.color === '#0a0d15' ? '#ffd60a' : sel.color) : null })} />
-              ভেতর হালকা রঙ
+              Light fill inside
             </label>
           )}
 
           <div className="row">
-            <label>অ্যানিমেশন</label>
+            <label>Animation</label>
             <select className="sel" value={(sel.anim || {}).type || 'draw'}
               onChange={e => upd(sel, { anim: { ...sel.anim, type: e.target.value } })}>
               {ANIM_TYPES.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
 
-          <SliderRow label="সময়" v={(sel.anim || {}).dur} min={0.05} max={4} step={0.05}
+          <SliderRow label="Time" v={(sel.anim || {}).dur} min={0.05} max={4} step={0.05}
             set={v => upd(sel, { anim: { ...sel.anim, dur: v } })} />
-          <SliderRow label="ডিলে" v={(sel.anim || {}).delay} min={0} max={6} step={0.05}
+          <SliderRow label="Delay" v={(sel.anim || {}).delay} min={0} max={6} step={0.05}
             set={v => upd(sel, { anim: { ...sel.anim, delay: v } })} />
 
           <div className="row">
-            <label>ইজ</label>
+            <label>Ease</label>
             <select className="sel" value={(sel.anim || {}).ease || 'out'}
               onChange={e => upd(sel, { anim: { ...sel.anim, ease: e.target.value } })}>
               {INK_EASES.map(x => <option key={x} value={x}>{x}</option>)}
@@ -165,16 +165,16 @@ export default function InkList() {
 
           <label className="chk">
             <input type="checkbox" checked={!!sel.loop} onChange={e => upd(sel, { loop: e.target.checked })} />
-            ↻ বারবার লুপ করুক
+            ↻ Loop forever
           </label>
           <label className="chk">
             <input type="checkbox" checked={sel.exitFade !== false} onChange={e => upd(sel, { exitFade: e.target.checked })} />
-            সিন শেষে মুছে যাবে
+            Fade out at scene end
           </label>
 
           <div className="row" style={{ marginTop: 6 }}>
             <button className="btn" style={{ flex: 1, justifyContent: 'center' }} onClick={() => actions.previewInk(sel)}>
-              ▶ অ্যানিমেশন দেখাও
+              ▶ Preview animation
             </button>
           </div>
         </div>

@@ -9,10 +9,10 @@
    1080-tall vertical frame renders with a 9px-equivalent hairline stroke. */
 
 export const ASPECTS = [
-  { id: '16:9', label: '16:9', name: 'ল্যান্ডস্কেপ', w: 1920, h: 1080, hint: 'YouTube · প্রেজেন্টেশন' },
-  { id: '9:16', label: '9:16', name: 'ভার্টিক্যাল', w: 1080, h: 1920, hint: 'Reels · Shorts · TikTok' },
-  { id: '1:1', label: '1:1', name: 'বর্গাকার', w: 1080, h: 1080, hint: 'Instagram পোস্ট' },
-  { id: '4:5', label: '4:5', name: 'পোর্ট্রেট', w: 1080, h: 1350, hint: 'Instagram ফিড' },
+  { id: '16:9', label: '16:9', name: 'Landscape', w: 1920, h: 1080, hint: 'YouTube · Presentation' },
+  { id: '9:16', label: '9:16', name: 'Vertical', w: 1080, h: 1920, hint: 'Reels · Shorts · TikTok' },
+  { id: '1:1', label: '1:1', name: 'Square', w: 1080, h: 1080, hint: 'Instagram post' },
+  { id: '4:5', label: '4:5', name: 'Portrait', w: 1080, h: 1350, hint: 'Instagram feed' },
 ];
 
 export const DEFAULT_ASPECT = '16:9';

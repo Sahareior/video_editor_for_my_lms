@@ -12,8 +12,8 @@ t('plain ascii is preserved', safeName('My Explainer') === 'My-Explainer');
 t('spaces become dashes', safeName('a b c') === 'a-b-c');
 /* a browser DISCARDS a `download` value outside its accepted charset and
    saves the blob as a file literally called "download" — this is the case the
-   user hit with a Bengali title */
-t('bengali falls back to a usable name', safeName('আমার ব্যাখ্যা 🎬', 'geneseon-explainer') === 'geneseon-explainer');
+   user hit with a non-latin title */
+t('non-latin script falls back to a usable name', safeName('こんにちは 🎬', 'geneseon-explainer') === 'geneseon-explainer');
 t('devanagari falls back too', safeName('नमस्ते', 'fb') === 'fb');
 t('emoji is stripped, not passed through', !/[^\x00-\x7F]/.test(safeName('Reel 🎬 1', 'fb')));
 t('accented latin degrades to ascii', safeName('F = ĀBC — HSC ICT') === 'F-ABC-HSC-ICT', safeName('F = ĀBC — HSC ICT'));

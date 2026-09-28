@@ -38,7 +38,7 @@ export default function InkToolbar() {
         {WIDTHS.map(w => (
           <button key={w}
             className={'inkWd' + (inkWidth === w ? ' on' : '')}
-            title={'মোটা ' + w}
+            title={'Width ' + w}
             onClick={() => actions.setInkWidth(w)}>
             <i style={{ width: Math.min(20, w + 2), height: Math.min(20, w + 2), background: inkColor === '#0a0d15' ? '#e8ecf5' : inkColor }} />
           </button>
@@ -46,8 +46,8 @@ export default function InkToolbar() {
       </div>
 
       <div className="inkBarGrp">
-        <button className="inkTool wide" title="Ctrl+Z" onClick={actions.undoInk}>↺ ফেরত</button>
-        <button className="inkTool wide done" title="ড্র বন্ধ করো" onClick={() => actions.setInkOn(false)}>✓ শেষ</button>
+        <button className="inkTool wide" title="Ctrl+Z" onClick={actions.undoInk}>↺ Undo</button>
+        <button className="inkTool wide done" title="Turn off draw" onClick={() => actions.setInkOn(false)}>✓ Done</button>
       </div>
     </div>
   );

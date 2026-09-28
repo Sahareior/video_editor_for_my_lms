@@ -51,9 +51,9 @@ export function renderFrame(ctx, t, P, rt) {
 
       // preview-only nudge when a scene has nothing on it (never baked into a recording)
       if (!(sc.layers || []).length && rt && !rt.recPhase) {
-        ctx.fillStyle = '#2c3a58'; ctx.font = '600 ' + Math.round(46 * s) + 'px "Hind Siliguri", sans-serif';
+        ctx.fillStyle = '#2c3a58'; ctx.font = '600 ' + Math.round(46 * s) + 'px "Inter", sans-serif';
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('＋ ডান প্যানেলে "লেয়ার" থেকে ছবি যোগ করো', cx, cy);
+        ctx.fillText('＋ Add an image from “Layer” in the right panel', cx, cy);
       }
 
       const dim = +sc.dim || 0;
@@ -102,9 +102,9 @@ export function renderFrame(ctx, t, P, rt) {
       ctx.restore();
     }
   } else if (!(P.scenes || []).length) {
-    ctx.fillStyle = '#2c3a58'; ctx.font = '600 ' + Math.round(44 * s) + 'px "Hind Siliguri", sans-serif';
+    ctx.fillStyle = '#2c3a58'; ctx.font = '600 ' + Math.round(44 * s) + 'px "Inter", sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('＋ নতুন সিন যোগ করো', cx, cy);
+    ctx.fillText('＋ Add a new scene', cx, cy);
   }
 
   /* preview-only: outline the layer currently selected in the Layer stack */  if (sc && !sc.endcard && rt && !rt.recPhase && rt.selLayerId) {
@@ -115,7 +115,7 @@ export function renderFrame(ctx, t, P, rt) {
       ctx.setLineDash([14 * s, 10 * s]);
       ctx.strokeRect(8 * s, 8 * s, W - 16 * s, H - 16 * s);
       ctx.setLineDash([]);
-      const tag = (L.src ? L.name || 'লেয়ার' : '■ ফাঁকা (কালো)');
+      const tag = (L.src ? L.name || 'Layer' : '■ Empty (black)');
       ctx.font = fontF(26 * s);
       const tw = ctx.measureText(tag).width + 26 * s;
       ctx.globalAlpha = .92;
@@ -145,7 +145,7 @@ export function renderFrame(ctx, t, P, rt) {
     ctx.font = fontF(330 * s); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillStyle = accent; ctx.shadowColor = accent; ctx.shadowBlur = 60 * s;
     ctx.globalAlpha = clamp(.15 + f * 1.2, 0, 1);
-    ctx.fillText(['৩', '২', '১'][3 - n] || '৩', 0, 0);
+    ctx.fillText(['3', '2', '1'][3 - n] || '3', 0, 0);
     ctx.restore();
   }
 }

@@ -10,7 +10,7 @@ import { normalizeAspect, DEFAULT_ASPECT } from '../engine/aspect.js';
                  This is the "remove the image but keep the gap" behaviour. */
 
 export function makeLayer(patch) {
-  return normalizeLayer({ id: uid(), name: 'লেয়ার', ...(patch || {}) });
+  return normalizeLayer({ id: uid(), name: 'Layer', ...(patch || {}) });
 }
 
 export function normalizeLayer(L) {
@@ -20,7 +20,7 @@ export function normalizeLayer(L) {
   return {
     id: L.id || uid(),
     src: L.src || null,
-    name: L.name || 'লেয়ার',
+    name: L.name || 'Layer',
     fill: L.fill || '#000000',
     opacity: L.opacity === undefined ? 1 : clamp(nz(L.opacity, 1), 0, 1),
     visible: L.visible === undefined ? true : !!L.visible,
@@ -34,18 +34,18 @@ export function normalizeLayer(L) {
 export const layerHasImage = (L) => !!(L && L.src);
 
 /* human label for the layer row */
-export const layerLabel = (L) => (L && L.src) ? (L.name || 'ছবি') : (L && L.name ? L.name + ' (ফাঁকা)' : 'ফাঁকা');
+export const layerLabel = (L) => (L && L.src) ? (L.name || 'Image') : (L && L.name ? L.name + ' (empty)' : 'Empty');
 
 export function makeLine() {
-  return { text: 'নতুন লাইন', style: 'pop', size: 64, y: .5, color: 'white', custom: '#ffffff', delay: .2, plate: false };
+  return { text: 'New line', style: 'pop', size: 64, y: .5, color: 'white', custom: '#ffffff', delay: .2, plate: false };
 }
 
 export function makeScene(start, index) {
   return {
     name: 'SCENE ' + (index + 1), start, end: start + 4,
     dim: .25, spot: .35, endcard: false,
-    layers: [makeLayer({ name: 'লেয়ার 1' })],
-    texts: [{ text: 'নতুন সিন', style: 'pop', size: 84, y: .5, color: 'accent', delay: .1, plate: true }],
+    layers: [makeLayer({ name: 'Layer 1' })],
+    texts: [{ text: 'New scene', style: 'pop', size: 84, y: .5, color: 'accent', delay: .1, plate: true }],
   };
 }
 
@@ -96,7 +96,7 @@ export function normalizeScene(s, legacyImg) {
     : [normalizeLayer({
         id: uid(),
         src: (legacyImg && legacyImg.src) || null,
-        name: (legacyImg && legacyImg.name) || 'লেয়ার 1',
+        name: (legacyImg && legacyImg.name) || 'Layer 1',
         cam: s.cam, camTo: s.camTo, camKeys: s.camKeys,
       })];
 
@@ -117,7 +117,7 @@ export function normalizeScene(s, legacyImg) {
 export function normalize(j) {
   j = j || {};
   j = { ...j };
-  j.title = j.title || 'আমার এক্সপ্লেইনার';
+  j.title = j.title || 'My Explainer';
   j.accent = j.accent || '#ffd60a';
   j.bg = j.bg || '#0a0d15';
   j.wm = j.wm !== undefined ? j.wm : 'GENESEON';
@@ -129,7 +129,7 @@ export function normalize(j) {
   const add = (m) => {
     if (!m || !m.src || seen.has(m.src)) return;
     seen.add(m.src);
-    media.push({ id: m.id || uid(), src: m.src, name: m.name || 'ছবি' });
+    media.push({ id: m.id || uid(), src: m.src, name: m.name || 'Image' });
   };
   (Array.isArray(j.media) ? j.media : []).forEach(add);
   add(j.image);
@@ -151,12 +151,12 @@ export function projectReducer(state, action) {
 
     case 'project/new':
       return normalize({
-        title: 'আমার এক্সপ্লেইনার',
+        title: 'My Explainer',
         media: action.media || (action.image ? [action.image] : []),
         scenes: [{
           name: 'SCENE 1', start: 0, end: 5, dim: .3, spot: .35,
-          layers: [makeLayer({ name: 'লেয়ার 1' })],
-          texts: [{ text: 'তোমার প্রশ্ন এখানে', style: 'pop', size: 84, y: .5, color: 'accent', delay: .2, plate: true }],
+          layers: [makeLayer({ name: 'Layer 1' })],
+          texts: [{ text: 'Your question here', style: 'pop', size: 84, y: .5, color: 'accent', delay: .2, plate: true }],
         }],
       });
 
@@ -169,7 +169,7 @@ export function projectReducer(state, action) {
       if (!m || !m.src) return state;
       const hit = state.media.find(x => x.src === m.src);
       if (hit) return state;
-      return { ...state, media: [...state.media, { id: m.id || uid(), src: m.src, name: m.name || 'ছবি' }] };
+      return { ...state, media: [...state.media, { id: m.id || uid(), src: m.src, name: m.name || 'Image' }] };
     }
 
     case 'media/delete': {
@@ -199,7 +199,7 @@ export function projectReducer(state, action) {
         layers: s.layers.map(L => ({ ...JSON.parse(JSON.stringify(L)), id: uid() })),
         // same for annotations, otherwise selecting one selects both
         annots: (s.annots || []).map(a => ({ ...JSON.parse(JSON.stringify(a)), id: uid() })),
-        name: s.name + ' কপি',
+        name: s.name + ' copy',
         start: +s.end, end: +s.end + (+s.end - +s.start),
       });
       const arr = [...state.scenes];
@@ -243,7 +243,7 @@ export function projectReducer(state, action) {
         // callers may pass a pre-built layer (so they can pre-select its id)
         const L = action.layer
           ? normalizeLayer(action.layer)
-          : makeLayer({ src: action.src || null, name: action.name || ('লেয়ার ' + (s.layers.length + 1)) });
+          : makeLayer({ src: action.src || null, name: action.name || ('Layer ' + (s.layers.length + 1)) });
         const arr = [...s.layers];
         // top of the stack by default (last = drawn last = on top)
         if (action.index == null || action.index >= arr.length) arr.push(L);
@@ -266,7 +266,7 @@ export function projectReducer(state, action) {
         if (i < 0) return s;
         const arr = [...s.layers];
         const L = arr[i];
-        arr.splice(i + 1, 0, { ...JSON.parse(JSON.stringify(L)), id: uid(), name: L.name + ' কপি' });
+        arr.splice(i + 1, 0, { ...JSON.parse(JSON.stringify(L)), id: uid(), name: L.name + ' copy' });
         return { ...s, layers: arr };
       });
 

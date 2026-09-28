@@ -58,7 +58,7 @@ p=R(p,{type:'annot/delete',id:A,annotId:ann.id});
 ok('deleting from the original leaves the copy intact', p.scenes[0].annots.length===0 && p.scenes[1].annots.length===1);
 p=R(p,{type:'scene/delete',id:A});
 ok('scene delete takes the clone with it and spares the rest',
-   p.scenes.length===2 && p.scenes[0].name.indexOf('কপি')>-1 && p.scenes[0].annots.length===1 && p.scenes[1].name==='B');
+   p.scenes.length===2 && p.scenes[0].name.indexOf('copy')>-1 && p.scenes[0].annots.length===1 && p.scenes[1].name==='B');
 
 console.log('\n\x1b[1mJSON round-trip\x1b[0m');
 const {image,...savable}=p;

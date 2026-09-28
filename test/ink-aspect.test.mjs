@@ -44,11 +44,11 @@ const dims = () => p.evaluate(() => {
    pixels", so the scene has to be stripped to bare canvas first or the demo
    art dominates the bounding box. */
 const blankScene = async () => {
-  await p.getByTitle('ডেমো').click().catch(() => {});
+  await p.getByRole('button', { name: /Demo/ }).click().catch(() => {});
   await p.waitForTimeout(500);
   const wm = p.locator('.colL input.inpT').last();
   if (await wm.count()) { await wm.fill(''); await p.waitForTimeout(200); }
-  const del = p.locator('.colR .lyr').first().locator('button[title="লেয়ার মুছে ফেলো"]');
+  const del = p.locator('.colR .lyr').first().locator('button[title="Delete layer"]');
   if (await del.count()) { await del.click(); await p.waitForTimeout(300); }
   while (await p.locator('.lineBox').count()) {
     await p.locator('.lineBox button.mini').last().click();
@@ -57,7 +57,7 @@ const blankScene = async () => {
   const dim = p.locator('.colR input[type=range]').last();
   if (await dim.count()) { await dim.fill('0'); await p.waitForTimeout(300); }
   while (await inkRows() > 0) {
-    await p.locator('.inkLyr').first().locator('button[title="মুছে ফেলো"]').click();
+    await p.locator('.inkLyr').first().locator('button[title="Delete"]').click();
     await p.waitForTimeout(150);
   }
 };
@@ -68,9 +68,9 @@ for (const label of ['9:16', '1:1', '16:9']) {
   await blankScene();
 
   /* enter draw mode, draw a free rect, measure it */
-  await p.getByRole('button', { name: /ড্র মোড/ }).first().click().catch(() => {});
+  await p.getByRole('button', { name: /Draw mode/ }).first().click().catch(() => {});
   await p.waitForTimeout(300);
-  await p.getByTitle('আয়তাক').click();
+  await p.getByTitle('Rectangle').click();
   await p.waitForTimeout(200);
 
   const bb = await box();
@@ -111,7 +111,7 @@ if (d) {
   t('aspect is written to the file', j.aspect === '9:16', JSON.stringify(j.aspect));
   /* reload it and confirm the stage comes back vertical */
   await p.setInputFiles('input[type=file]', out).catch(async () => {
-    await p.locator('label.btn:has-text("খোলো") input[type=file]').setInputFiles(out);
+    await p.locator('label.btn:has-text("Open") input[type=file]').setInputFiles(out);
   });
   await p.waitForTimeout(900);
   const cv = await p.evaluate(() => { const c = document.querySelector('canvas.stage'); return { w: c.width, h: c.height }; });
@@ -124,7 +124,7 @@ if (d) {
 console.log('\n\x1b[1mlegacy project (no aspect key)\x1b[0m');
 const legacy = join(dl, 'legacy.geneseon.json');
 (await import('node:fs')).writeFileSync(legacy, JSON.stringify({ version: 2, title: 'legacy', scenes: [{ name: 'S', start: 0, end: 3, layers: [], texts: [] }] }));
-await p.locator('label.btn:has-text("খোলো") input[type=file]').setInputFiles(legacy);
+await p.locator('label.btn:has-text("Open") input[type=file]').setInputFiles(legacy);
 await p.waitForTimeout(900);
 const lcv = await p.evaluate(() => { const c = document.querySelector('canvas.stage'); return { w: c.width, h: c.height }; });
 t('a pre-aspect project opens at 16:9', lcv.w === 1920 && lcv.h === 1080, JSON.stringify(lcv));

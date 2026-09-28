@@ -77,28 +77,28 @@ function LayerCamera({ sc, L }) {
   if (!L.src) {
     return (
       <>
-        <div className="sect">ক্যামেরা — ■ ফাঁকা লেয়ার</div>
-        <div className="hint">এই স্লটে ছবি নেই, তাই কালো প্যানেলই দেখাচ্ছে — ক্যামেরার কিছু নেই।
-          ছবি বসালে এখানে প্যান/জুম/কিফ্রেম কাজ করবে।</div>
+        <div className="sect">Camera — ■ empty layer</div>
+        <div className="hint">This slot has no image, so it just shows a black panel — nothing for the camera to do.
+          Place an image and pan/zoom/keyframes work here.</div>
       </>
     );
   }
 
   return (
     <>
-      <div className="sect">ক্যামেরা — “{L.name || 'লেয়ার'}”</div>
+      <div className="sect">Camera — “{L.name || 'Layer'}”</div>
 
       {/* mode switch */}
       <div className="row" style={{ marginBottom: 4 }}>
         <button
           className={'btn' + (!hasKeys ? ' sel' : '')}
           onClick={() => hasKeys && kf('camkeys/toggle')}>
-          সিম্পল (Ken Burns)
+          Simple (Ken Burns)
         </button>
         <button
           className={'btn' + (hasKeys ? ' sel' : '')}
           onClick={() => !hasKeys && kf('camkeys/toggle')}>
-          ✨ কিফ্রেম
+          ✨ Keyframes
         </button>
       </div>
 
@@ -108,13 +108,13 @@ function LayerCamera({ sc, L }) {
           <SliderRow label="Start Y" v={L.cam.y} min={0} max={1} step={0.002} set={v => upd({ cam: { y: v } })} />
           <SliderRow label="Start Zoom" v={L.cam.z} min={1} max={6} step={0.01} set={v => upd({ cam: { z: v } })} />
           <div className="row">
-            <button className="btn" onClick={() => upd({ cam: { x: .5, y: .5 } })}>কেন্দ্র</button>
-            <button className="btn" onClick={() => upd({ cam: { x: .5, y: .5, z: 1.1 } })}>ফিট</button>
+            <button className="btn" onClick={() => upd({ cam: { x: .5, y: .5 } })}>Center</button>
+            <button className="btn" onClick={() => upd({ cam: { x: .5, y: .5, z: 1.1 } })}>Fit</button>
           </div>
           <label className="chk">
             <input type="checkbox" checked={!!L.camTo}
               onChange={e => upd({ camTo: e.target.checked ? { x: L.cam.x, y: L.cam.y, z: Math.min(6, L.cam.z + 0.4) } : null })} />
-            শেষ পর্যন্ত প্যান
+            Pan to the end
           </label>
           {L.camTo && (
             <>
@@ -130,7 +130,7 @@ function LayerCamera({ sc, L }) {
         <>
           <div className="row" style={{ marginBottom: 6 }}>
             <button className="btn" style={{ flex: 1, justifyContent: 'center' }} onClick={() => kf('camkeys/add')}>
-              ＋ কিফ্রেম যোগ
+              ＋ Add keyframe
             </button>
           </div>
 
@@ -153,12 +153,12 @@ function LayerCamera({ sc, L }) {
           {L.camKeys[editKi] && (
             <div className="kfEditor">
               <div className="row" style={{ marginBottom: 4 }}>
-                <label>কিফ্রেম #{editKi + 1}</label>
+                <label>Keyframe #{editKi + 1}</label>
                 <div className="sp" />
                 <button className="mini" disabled={L.camKeys.length <= 2}
                   onClick={() => kf('camkeys/delete', { index: editKi })}>✕</button>
               </div>
-              <SliderRow label="সময়" v={L.camKeys[editKi].t} min={0} max={1} step={0.01}
+              <SliderRow label="Time" v={L.camKeys[editKi].t} min={0} max={1} step={0.01}
                 set={v => kf('camkeys/update', { index: editKi, patch: { t: v } })} />
               <SliderRow label="X" v={L.camKeys[editKi].cam.x} min={0} max={1} step={0.002}
                 set={v => kf('camkeys/update', { index: editKi, patch: { cam: { x: v } } })} />
@@ -176,9 +176,9 @@ function LayerCamera({ sc, L }) {
                 </select>
               </div>
               <div className="row">
-                <button className="btn" onClick={() => kf('camkeys/update', { index: editKi, patch: { cam: { x: .5, y: .5 } } })}>কেন্দ্র</button>
-                <button className="btn" onClick={() => kf('camkeys/update', { index: editKi, patch: { cam: { x: .5, y: .5, z: 1.1 } } })}>ফিট</button>
-                <button className="btn" onClick={() => kf('camkeys/update', { index: editKi, patch: { t: playP } })}>▶ এখানে</button>
+                <button className="btn" onClick={() => kf('camkeys/update', { index: editKi, patch: { cam: { x: .5, y: .5 } } })}>Center</button>
+                <button className="btn" onClick={() => kf('camkeys/update', { index: editKi, patch: { cam: { x: .5, y: .5, z: 1.1 } } })}>Fit</button>
+                <button className="btn" onClick={() => kf('camkeys/update', { index: editKi, patch: { t: playP } })}>▶ Set here</button>
               </div>
             </div>
           )}
@@ -196,27 +196,27 @@ function LayerCamera({ sc, L }) {
 
 export default function Inspector() {
   const { selScene: sc, selLayer, dispatch, rt } = useStudio();
-  if (!sc) return <div className="colR"><div className="hint">একটা সিন সিলেক্ট করো 👈</div></div>;
+  if (!sc) return <div className="colR"><div className="hint">Select a scene 👈</div></div>;
 
   const upd = patch => dispatch({ type: 'scene/update', id: sc.id, patch });
   const ph = () => Math.round(rt.time * 10) / 10;
 
   return (
     <div className="colR">
-      <div className="sect">সিন</div>
-      <div className="row"><label>নাম</label>
+      <div className="sect">Scene</div>
+      <div className="row"><label>Name</label>
         <input className="inp inpT" value={sc.name} onChange={e => upd({ name: e.target.value })} /></div>
       <div className="row"><label>Start</label>
         <input type="number" className="inp" step="0.1" min="0" value={sc.start}
           onChange={e => upd({ start: Math.max(0, +e.target.value || 0) })} />
-        <button className="mini" title="playhead-এ সেট" onClick={() => upd({ start: ph() })}>▶</button></div>
+        <button className="mini" title="Set to playhead" onClick={() => upd({ start: ph() })}>▶</button></div>
       <div className="row"><label>End</label>
         <input type="number" className="inp" step="0.1" min="0.4" value={sc.end}
           onChange={e => upd({ end: Math.max(sc.start + 0.4, +e.target.value || 0) })} />
-        <button className="mini" title="playhead-এ সেট" onClick={() => upd({ end: ph() })}>▶</button></div>
+        <button className="mini" title="Set to playhead" onClick={() => upd({ end: ph() })}>▶</button></div>
       <label className="chk">
         <input type="checkbox" checked={!!sc.endcard} onChange={e => upd({ endcard: e.target.checked })} />
-        ★ এন্ডকার্ড সিন (সব লেয়ার লুকায়, ক্লিন স্ক্রিন)
+        ★ Endcard scene (all layers hide, clean screen)
       </label>
 
       <LayerStack />
@@ -227,18 +227,18 @@ export default function Inspector() {
         <>
           {selLayer
             ? <LayerCamera sc={sc} L={selLayer} />
-            : <><div className="sect">ক্যামেরা</div>
-                <div className="hint">এই সিনে লেয়ার নেই। উপরে <b>＋ ছবি</b> বা <b>＋ ফাঁকা</b> চাপো।</div></>}
+            : <><div className="sect">Camera</div>
+                <div className="hint">This scene has no layers. Press <b>＋ Image</b> or <b>＋ Empty</b> above.</div></>}
 
-          <div className="sect">লুক</div>
+          <div className="sect">Look</div>
           <SliderRow label="Dim" v={+sc.dim || 0} min={0} max={0.85} step={0.01} set={v => upd({ dim: v })} />
           <SliderRow label="Spotlight" v={+sc.spot || 0} min={0} max={1} step={0.01} set={v => upd({ spot: v })} />
         </>
       )}
 
-      <div className="sect">টেক্সট — KINETIC TYPOGRAPHY</div>
+      <div className="sect">Text — KINETIC TYPOGRAPHY</div>
       {sc.texts.map((L, i) => <LineEditor key={i} sceneId={sc.id} line={L} index={i} />)}
-      <button className="btn" onClick={() => dispatch({ type: 'line/add', id: sc.id })}>＋ লাইন যোগ</button>
+      <button className="btn" onClick={() => dispatch({ type: 'line/add', id: sc.id })}>＋ Add line</button>
     </div>
   );
 }

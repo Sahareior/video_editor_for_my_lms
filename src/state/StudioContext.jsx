@@ -41,7 +41,7 @@ export function StudioProvider({ children }) {
   const [inkColor, setInkColorState] = useState('#ffd60a');
   const [inkWidth, setInkWidthState] = useState(9);
   const [selInkId, setSelInkId] = useState(null);
-  const [status, setStatus] = useState('প্রস্তুত 🎬 — ডেমো রেডি। নিজের ছবি আপলোড করে নিজের ভিডিও বানাও।');
+  const [status, setStatus] = useState('Ready 🎬 — demo loaded. Upload your own images and make your own video.');
 
   /* refs mirrored from state — read by the 60fps loop without re-renders */
   const projectRef = useRef(project); projectRef.current = project;
@@ -78,7 +78,7 @@ export function StudioProvider({ children }) {
     const cv = canvasRef.current;
     if (cv && (cv.width !== a.w || cv.height !== a.h)) { cv.width = a.w; cv.height = a.h; }
     clearLayoutCache();
-    setStatus('🎞️ অ্যাসপেক্ট: ' + a.label + ' (' + a.w + '×' + a.h + ') — ' + a.name);
+    setStatus('🎞️ Aspect: ' + a.label + ' (' + a.w + '×' + a.h + ') — ' + a.name);
   }, [aspect]);
 
   /* which layer is being edited — read by the 60fps loop to draw the selection frame */
@@ -87,7 +87,7 @@ export function StudioProvider({ children }) {
   /* webfonts ready → invalidate kinetic layout cache */
   useEffect(() => {
     if (!document.fonts) return;
-    Promise.all(['700 64px "Hind Siliguri"', '600 32px "Hind Siliguri"'].map(f => document.fonts.load(f).catch(() => {})))
+    Promise.all(['700 64px "Inter"', '600 32px "Inter"'].map(f => document.fonts.load(f).catch(() => {})))
       .then(() => clearLayoutCache());
   }, []);
 
@@ -140,12 +140,12 @@ export function StudioProvider({ children }) {
   const snapPNG = useCallback(() => {
     canvasRef.current && canvasRef.current.toBlob(b => b && downloadBlob(b, 'geneseon-frame.png'));
   }, []);
-  const saveJSON = useCallback(() => { saveProjectJSON(projectRef.current); setStatus('💾 প্রজেক্ট সেভ হয়েছে'); }, []);
+  const saveJSON = useCallback(() => { saveProjectJSON(projectRef.current); setStatus('💾 Project saved'); }, []);
 
   /* switching ratio is a no-op while recording — resizing the canvas
      mid-capture would tear the stream and corrupt the file */
   const changeAspect = useCallback((id) => {
-    if (rt.recPhase) { setStatus('⛔ রেকর্ডিং চলছে — আগে থামাও'); return; }
+    if (rt.recPhase) { setStatus('⛔ Recording in progress — stop it first'); return; }
     const a = aspectById(id);
     if (a.id === projectRef.current.aspect) return;
     dispatch({ type: 'project/patch', patch: { aspect: a.id } });
@@ -155,13 +155,13 @@ export function StudioProvider({ children }) {
       const j = JSON.parse(await file.text());
       dispatch({ type: 'project/load', project: j });
       setSelId(null); setSelLayerId(null); rt.time = 0;
-      setStatus('📂 প্রজেক্ট লোড হয়েছে');
-    } catch { setStatus('❌ ফাইলটা ঠিক না'); }
+      setStatus('📂 Project loaded');
+    } catch { setStatus('❌ That file is not valid'); }
   }, []);
   const loadDemo = useCallback(() => {
     dispatch({ type: 'project/load', project: demoProject() });
     setSelId(null); setSelLayerId(null); rt.time = 0;
-    setStatus('🎬 ডেমো লোড হয়েছে — ▶ চাপো');
+    setStatus('🎬 Demo loaded — press ▶');
   }, []);
   const newProject = useCallback(() => {
     dispatch({ type: 'project/new', media: projectRef.current.media });
@@ -177,7 +177,7 @@ export function StudioProvider({ children }) {
     if (!sid) return;
     const sc = selScene();
     const L = { id: uid(), ...(patch || {}) };
-    if (!L.name) L.name = 'লেয়ার ' + ((sc ? sc.layers.length : 0) + 1);
+    if (!L.name) L.name = 'Layer ' + ((sc ? sc.layers.length : 0) + 1);
     dispatch({ type: 'layer/add', sceneId: sid, layer: L });
     setSelLayerId(L.id);
     return L.id;
@@ -203,8 +203,8 @@ export function StudioProvider({ children }) {
         }
       }
       if (!opts2.silent) {
-        setStatus('🖼️ "' + m.name + '" যোগ হয়েছে — '
-          + (opts2.toScene === false ? 'বিনে সংরক্ষিত' : 'বর্তমান সিনের স্ট্যাকে যোগ হয়েছে'));
+        setStatus('🖼️ "' + m.name + '" added — '
+          + (opts2.toScene === false ? 'saved to the bin' : "added to the current scene's stack"));
       }
     }
     if (firstId) setSelLayerId(firstId);
@@ -214,14 +214,14 @@ export function StudioProvider({ children }) {
     const sid = sceneId();
     if (!sid) return;
     dispatch({ type: 'layer/clear', sceneId: sid, layerId });
-    setStatus('⬛ ছবিটা সরানো হয়েছে — স্লটটা কালো হয়ে আছে');
+    setStatus('⬛ Image removed — the slot is now black');
   }, []);
 
   const fillLayer = useCallback((layerId, media) => {
     const sid = sceneId();
     if (!sid) return;
     dispatch({ type: 'layer/fill', sceneId: sid, layerId, src: media.src, name: media.name });
-    setStatus('🖼️ "' + media.name + '" এই লেয়ারে বসানো হয়েছে');
+    setStatus('🖼️ "' + media.name + '" placed on this layer');
   }, []);
 
   /* ---------- drawing actions ---------- */
@@ -229,7 +229,7 @@ export function StudioProvider({ children }) {
     const on = typeof v === 'function' ? v(rt.inkEdit.on) : v;
     setInkOnState(on);
     if (!on) setSelInkId(null);
-    setStatus(on ? '✏️ ড্র মোড চালু — প্রিভিউতে আঁকো' : '🎬 ড্র মোড বন্ধ');
+    setStatus(on ? '✏️ Draw mode on — draw on the preview' : '🎬 Draw mode off');
   }, []);
   const setInkTool = useCallback((t) => { setInkToolState(t); rt.inkEdit.tool = t; }, []);
   const setInkColor = useCallback((c) => { setInkColorState(c); rt.inkEdit.color = c; }, []);
@@ -256,7 +256,7 @@ export function StudioProvider({ children }) {
   usePlayback({ rt, projectRef, canvasRef, timeLabelRef, playheadRef, seekRef, apiRef, setPlaying });
   const cameraDrag = useCameraDrag({ rt, canvasRef, projectRef, selIdRef, selLayerIdRef, recordingRef, setSelId, setSelLayerId, dispatch });
   const inkDraw = useInkDraw({ rt, canvasRef, projectRef, selIdRef, recordingRef, setSelId, setSelInkId, setPlaying, setInkOn, dispatch });
-  const undoInk = useCallback(() => { inkDraw.undo(); setStatus('↺ ফেরত হয়েছে'); }, [inkDraw]);
+  const undoInk = useCallback(() => { inkDraw.undo(); setStatus('↺ Undone'); }, [inkDraw]);
 
   /* latest callbacks for the RAF loop */
   Object.assign(apiRef.current, {

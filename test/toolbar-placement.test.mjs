@@ -8,7 +8,7 @@ await p.goto('http://localhost:4173/',{waitUntil:'networkidle'});
 await p.waitForTimeout(1800);
 
 t('draw bar is hidden until draw mode is on', (await p.locator('.inkBar').count())===0);
-await p.getByRole('button',{name:/ড্র মোড/}).first().click();
+await p.getByRole('button',{name:/Draw mode/}).first().click();
 await p.waitForTimeout(500);
 t('draw bar appears with draw mode', (await p.locator('.inkBar').count())===1);
 
@@ -45,7 +45,7 @@ for (const label of ['9:16','1:1','4:5','16:9']) {
 /* the tools still work from the new position */
 await p.locator('.aspBtn',{hasText:'16:9'}).first().click();
 await p.waitForTimeout(500);
-await p.getByTitle('আয়তাক').click();
+await p.getByTitle('Rectangle').click();
 await p.waitForTimeout(200);
 const bb = await p.locator('canvas.stage').boundingBox();
 await p.mouse.move(bb.x+bb.width*0.25, bb.y+bb.height*0.25); await p.mouse.down();

@@ -13,19 +13,19 @@ import { clamp, hexA, uid } from './math.js';
    ellipse, a rectangle perimeter and an arrow shaft. */
 
 export const INK_TOOLS = [
-  { id: 'select', label: '↖', name: 'নির্বাচন' },
-  { id: 'pen', label: '✎', name: 'ফ্রিহ্যান্ড' },
-  { id: 'ellipse', label: '◯', name: 'বৃত্ত/এলিপ্স' },
-  { id: 'rect', label: '▭', name: 'আয়তাক' },
-  { id: 'arrow', label: '➜', name: 'তির' },
-  { id: 'line', label: '╱', name: 'রেখা' },
+  { id: 'select', label: '↖', name: 'Select' },
+  { id: 'pen', label: '✎', name: 'Freehand' },
+  { id: 'ellipse', label: '◯', name: 'Ellipse' },
+  { id: 'rect', label: '▭', name: 'Rectangle' },
+  { id: 'arrow', label: '➜', name: 'Arrow' },
+  { id: 'line', label: '╱', name: 'Line' },
 ];
 
 export const ANIM_TYPES = [
-  { id: 'draw', name: '✎ আঁকা' },
-  { id: 'pop', name: '💥 পপ' },
-  { id: 'fade', name: '🌫 ফেইড' },
-  { id: 'wipe', name: '▤ ওয়াইপ' },
+  { id: 'draw', name: '✎ Draw' },
+  { id: 'pop', name: '💥 Pop' },
+  { id: 'fade', name: '🌫 Fade' },
+  { id: 'wipe', name: '▤ Wipe' },
 ];
 
 export const INK_EASES = ['linear', 'out', 'in-out', 'in'];
@@ -37,7 +37,7 @@ export function makeInk(patch) {
   const a = { id: uid(), tool: 'pen', pts: [], color: '#ffd60a', width: 9, fill: null, loop: false, exitFade: true, ...(patch || {}) };
   a.id = a.id || uid(); // patch may pass id:null
   a.anim = { type: 'draw', dur: 0.55, delay: 0.1, ease: 'out', ...((patch && patch.anim) || {}) };
-  a.name = a.name || (a.tool === 'pen' ? 'ফ্রিহ্যান্ড' : (INK_TOOLS.find(t => t.id === a.tool) || {}).name || 'ড্র');
+  a.name = a.name || (a.tool === 'pen' ? 'Freehand' : (INK_TOOLS.find(t => t.id === a.tool) || {}).name || 'Ink');
   return a;
 }
 
