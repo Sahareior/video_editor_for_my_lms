@@ -1,6 +1,7 @@
 import { uid, clamp } from '../engine/math.js';
 import { normalizeInks } from '../engine/ink.js';
 import { normalizeAspect, DEFAULT_ASPECT } from '../engine/aspect.js';
+import { resequenceScenes } from '../engine/timeline.js';
 
 /* ---------- layers ----------
    A scene owns a stack of image layers (index 0 = bottom-most, like a
@@ -136,7 +137,7 @@ export function normalize(j) {
   j.media = media;
   j.image = media.length ? media[0] : null; // legacy field: first bin item
 
-  j.scenes = (j.scenes || []).map(s => normalizeScene(s, j.image));
+  j.scenes = resequenceScenes((j.scenes || []).map(s => normalizeScene(s, j.image)));
   return j;
 }
 
@@ -181,12 +182,61 @@ export function projectReducer(state, action) {
     case 'image/set':
       return { ...state, image: action.image };
 
-    /* ---------- scenes ---------- */
-    case 'scene/add':
-      return { ...state, scenes: [...state.scenes, normalizeScene(makeScene(action.start, state.scenes.length))] };
+    /* ---------- scenes (CapCut magnetic timeline) ---------- */
+    case 'scene/add': {
+      const scenes = [...state.scenes];
+      let insertIdx = scenes.length;
+      if (action.start !== undefined && scenes.length > 0) {
+        const idx = scenes.findIndex(s => action.start >= +s.start && action.start < +s.end);
+        if (idx >= 0) insertIdx = idx + 1;
+      }
+      const newScene = normalizeScene(makeScene(0, scenes.length));
+      scenes.splice(insertIdx, 0, newScene);
+      return { ...state, scenes: resequenceScenes(scenes) };
+    }
 
-    case 'scene/update':
-      return mapScene(state, action.id, s => ({ ...s, ...action.patch }));
+    case 'scene/update': {
+      let nextScenes = state.scenes.map(s => {
+        if (s.id !== action.id) return s;
+        const patch = action.patch || {};
+        let start = s.start;
+        let end = s.end;
+        if (patch.duration !== undefined) {
+          end = start + Math.max(0.4, +patch.duration || 0.4);
+        } else if (patch.end !== undefined && patch.start === undefined) {
+          end = Math.max(start + 0.4, +patch.end || start + 0.4);
+        } else if (patch.start !== undefined && patch.end === undefined) {
+          const dur = Math.max(0.4, (+s.end || 0) - (+s.start || 0));
+          start = Math.max(0, +patch.start || 0);
+          end = start + dur;
+        } else if (patch.start !== undefined && patch.end !== undefined) {
+          start = Math.max(0, +patch.start || 0);
+          end = Math.max(start + 0.4, +patch.end || start + 0.4);
+        }
+        return { ...s, ...patch, start, end };
+      });
+      if (action.patch && (action.patch.start !== undefined || action.patch.end !== undefined || action.patch.duration !== undefined)) {
+        nextScenes = resequenceScenes(nextScenes);
+      }
+      return { ...state, scenes: nextScenes };
+    }
+
+    case 'scene/reorder': {
+      const { fromIndex, toIndex } = action;
+      if (fromIndex === undefined || toIndex === undefined || fromIndex === toIndex) return state;
+      if (fromIndex < 0 || fromIndex >= state.scenes.length || toIndex < 0 || toIndex >= state.scenes.length) return state;
+      const arr = [...state.scenes];
+      const [moved] = arr.splice(fromIndex, 1);
+      arr.splice(toIndex, 0, moved);
+      return { ...state, scenes: resequenceScenes(arr) };
+    }
+
+    case 'scene/resize': {
+      const { id, duration } = action;
+      const dur = Math.max(0.4, Math.round(duration * 10) / 10);
+      const arr = state.scenes.map(s => (s.id === id ? { ...s, end: (+s.start || 0) + dur } : s));
+      return { ...state, scenes: resequenceScenes(arr) };
+    }
 
     case 'scene/duplicate': {
       const i = state.scenes.findIndex(s => s.id === action.id);
@@ -200,15 +250,17 @@ export function projectReducer(state, action) {
         // same for annotations, otherwise selecting one selects both
         annots: (s.annots || []).map(a => ({ ...JSON.parse(JSON.stringify(a)), id: uid() })),
         name: s.name + ' copy',
-        start: +s.end, end: +s.end + (+s.end - +s.start),
       });
       const arr = [...state.scenes];
       arr.splice(i + 1, 0, clone);
-      return { ...state, scenes: arr };
+      return { ...state, scenes: resequenceScenes(arr) };
     }
 
-    case 'scene/delete':
-      return { ...state, scenes: state.scenes.filter(s => s.id !== action.id) };
+    case 'scene/delete': {
+      if (state.scenes.length <= 1) return state;
+      const arr = state.scenes.filter(s => s.id !== action.id);
+      return { ...state, scenes: resequenceScenes(arr) };
+    }
 
     case 'scene/move': {
       const arr = [...state.scenes];
@@ -216,7 +268,7 @@ export function projectReducer(state, action) {
       const j = i + action.dir;
       if (i < 0 || j < 0 || j >= arr.length) return state;
       [arr[i], arr[j]] = [arr[j], arr[i]];
-      return { ...state, scenes: arr };
+      return { ...state, scenes: resequenceScenes(arr) };
     }
 
     /* ---------- lines (text) ---------- */

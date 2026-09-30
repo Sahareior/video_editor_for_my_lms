@@ -4,6 +4,7 @@ import PreviewStage from './components/PreviewStage.jsx';
 import Transport from './components/Transport.jsx';
 import Timeline from './components/Timeline.jsx';
 import Inspector from './components/Inspector.jsx';
+import ExportModal from './components/ExportModal.jsx';
 import { useStudio } from './state/StudioContext.jsx';
 
 export default function App() {
@@ -21,6 +22,8 @@ export default function App() {
         <Inspector />
       </div>
       <div className="status">{status}</div>
+      <ExportModal />
     </div>
   );
 }
+

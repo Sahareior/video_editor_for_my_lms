@@ -22,7 +22,9 @@ export function usePlayback({ rt, projectRef, canvasRef, timeLabelRef, playheadR
           rt.time = end; rt.playing = false; setPlaying(false);
           if (rt.recPhase === 'rec' && rt.media && rt.media.state !== 'inactive') rt.media.stop();
         }
+        apiRef.current.onTimeUpdate?.(rt.time, end);
       }
+
 
       const cv = canvasRef.current;
       if (cv) renderFrame(cv.getContext('2d'), rt.time, P, rt);

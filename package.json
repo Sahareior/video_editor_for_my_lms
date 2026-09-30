@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node test/ink.test.mjs && node test/reducer.test.mjs && node test/aspect.test.mjs",
+    "test": "node test/ink.test.mjs && node test/reducer.test.mjs && node test/aspect.test.mjs && node test/timeline-reorder.test.mjs",
     "test:e2e": "node test/inter.mjs && node test/anim.mjs",
     "test:export": "node test/export-aspect.test.mjs",
     "test:aspect": "node test/ink-aspect.test.mjs",

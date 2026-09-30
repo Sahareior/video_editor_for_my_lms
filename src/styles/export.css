@@ -1,0 +1,529 @@
+/* ---------- CapCut Export Studio Modal Styles ---------- */
+
+.btnExport {
+  background: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid #38bdf8 !important;
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  font-weight: 700 !important;
+  padding: 7px 16px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btnExport:hover {
+  background: linear-gradient(135deg, #38e1ff 0%, #1a75ff 100%) !important;
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.btnExport:active {
+  transform: translateY(0);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 14, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalBox {
+  background: #0d121e;
+  border: 1px solid #1f2b44;
+  border-radius: 16px;
+  width: 760px;
+  max-width: 96vw;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  border-bottom: 1px solid #182236;
+  background: #0a0e18;
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.modalTitleIcon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  color: #8b94a8;
+  font-size: 18px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.modalClose:hover {
+  background: #182236;
+  color: #f1f5f9;
+}
+
+.modalBody {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  padding: 22px;
+  overflow-y: auto;
+  max-height: calc(92vh - 140px);
+}
+
+/* --- Left Column: Cover & Summary --- */
+.exportCoverCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exportPreviewCard {
+  position: relative;
+  background: #070a12;
+  border: 1px solid #1c273e;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+}
+
+.exportPreviewThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #05070d;
+}
+
+.exportBadgeOverlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.exportBadge {
+  background: rgba(10, 14, 24, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #00d2ff;
+  letter-spacing: 0.3px;
+}
+
+.exportBadge.dur {
+  color: #f1f5f9;
+}
+
+.exportSummaryBox {
+  background: #090e18;
+  border: 1px solid #19243a;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exportSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  color: #8b94a8;
+}
+
+.exportSummaryVal {
+  font-weight: 600;
+  color: #cfd6e4;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Right Column: Settings --- */
+.exportFormCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.exportFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exportLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.exportHint {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.exportInput {
+  background: #080c14;
+  border: 1px solid #1c273e;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: #f1f5f9;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.exportInput:focus {
+  border-color: #00d2ff;
+  box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.2);
+}
+
+.exportPillGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  gap: 6px;
+}
+
+.exportPill {
+  background: #090e18;
+  border: 1px solid #1a253c;
+  color: #94a3b8;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: all 0.15s;
+}
+
+.exportPill:hover:not(.active):not(:disabled) {
+  border-color: #2c3c5e;
+  color: #e2e8f0;
+}
+
+.exportPill.active {
+  background: linear-gradient(180deg, #10263f 0%, #0d1e33 100%);
+  border-color: #00d2ff;
+  color: #00d2ff;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+}
+
+.exportPill:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pillSub {
+  font-size: 9px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.exportPill.active .pillSub {
+  color: #38bdf8;
+}
+
+.recTag {
+  font-size: 8.5px;
+  background: #00d2ff;
+  color: #070d17;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* --- Modal Footer --- */
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  border-top: 1px solid #182236;
+  background: #080c14;
+}
+
+.modalFooterInfo {
+  font-size: 12px;
+  color: #8b94a8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modalFooterActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btnCancel {
+  background: #101624;
+  border: 1px solid #222e47;
+  color: #94a3b8;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btnCancel:hover {
+  background: #162033;
+  color: #e2e8f0;
+}
+
+.btnStartExport {
+  background: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%);
+  border: 1px solid #38bdf8;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-weight: 700;
+  font-size: 13.5px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 0 16px rgba(0, 210, 255, 0.45);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btnStartExport:hover {
+  background: linear-gradient(135deg, #38e1ff 0%, #1a75ff 100%);
+  box-shadow: 0 0 24px rgba(0, 210, 255, 0.65);
+  transform: translateY(-1px);
+}
+
+/* --- Exporting Progress View --- */
+.exportProgressView {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  gap: 20px;
+  text-align: center;
+}
+
+.exportProgressCircleWrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exportProgressSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.exportProgressBg {
+  fill: none;
+  stroke: #162034;
+  stroke-width: 8;
+}
+
+.exportProgressFill {
+  fill: none;
+  stroke: url(#exportGradient);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.exportProgressText {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exportProgressPct {
+  font-size: 28px;
+  font-weight: 800;
+  color: #00d2ff;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.exportProgressStatus {
+  font-size: 11px;
+  color: #8b94a8;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.exportProgressBarTrack {
+  width: 100%;
+  max-width: 440px;
+  height: 8px;
+  background: #141c2c;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.exportProgressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #00d2ff, #0077ff);
+  border-radius: 4px;
+  box-shadow: 0 0 10px #00d2ff;
+  transition: width 0.1s linear;
+}
+
+.exportProgressDetails {
+  font-size: 12.5px;
+  color: #94a3b8;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Export Completed View --- */
+.exportCompleteView {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  gap: 18px;
+  text-align: center;
+}
+
+.exportSuccessIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.4);
+  animation: popSuccess 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popSuccess {
+  0% { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.exportSuccessTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.exportSuccessDesc {
+  font-size: 13px;
+  color: #94a3b8;
+  max-width: 440px;
+  line-height: 1.5;
+}
+
+.exportVideoPlayerWrapper {
+  width: 100%;
+  max-width: 460px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #1e293b;
+  background: #000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.exportVideoPlayer {
+  width: 100%;
+  max-height: 240px;
+  display: block;
+}
+
+.exportCompleteActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}

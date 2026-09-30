@@ -195,25 +195,24 @@ function LayerCamera({ sc, L }) {
 }
 
 export default function Inspector() {
-  const { selScene: sc, selLayer, dispatch, rt } = useStudio();
+  const { selScene: sc, selLayer, dispatch, actions } = useStudio();
   if (!sc) return <div className="colR"><div className="hint">Select a scene 👈</div></div>;
 
   const upd = patch => dispatch({ type: 'scene/update', id: sc.id, patch });
-  const ph = () => Math.round(rt.time * 10) / 10;
+  const dur = Math.round(((+sc.end || 0) - (+sc.start || 0)) * 10) / 10;
 
   return (
     <div className="colR">
       <div className="sect">Scene</div>
       <div className="row"><label>Name</label>
         <input className="inp inpT" value={sc.name} onChange={e => upd({ name: e.target.value })} /></div>
-      <div className="row"><label>Start</label>
-        <input type="number" className="inp" step="0.1" min="0" value={sc.start}
-          onChange={e => upd({ start: Math.max(0, +e.target.value || 0) })} />
-        <button className="mini" title="Set to playhead" onClick={() => upd({ start: ph() })}>▶</button></div>
-      <div className="row"><label>End</label>
-        <input type="number" className="inp" step="0.1" min="0.4" value={sc.end}
-          onChange={e => upd({ end: Math.max(sc.start + 0.4, +e.target.value || 0) })} />
-        <button className="mini" title="Set to playhead" onClick={() => upd({ end: ph() })}>▶</button></div>
+      <div className="row"><label>Duration</label>
+        <input type="number" className="inp" step="0.1" min="0.4" value={dur}
+          onChange={e => dispatch({ type: 'scene/resize', id: sc.id, duration: Math.max(0.4, +e.target.value || 0.4) })} />
+        <span style={{ fontSize: 11, color: '#8b94a8', alignSelf: 'center', marginLeft: 4 }}>s</span></div>
+      <div className="row"><label>Time</label>
+        <span style={{ fontSize: 11, color: '#cfd6e4', alignSelf: 'center' }}>{(+sc.start).toFixed(1)}–{(+sc.end).toFixed(1)}s</span>
+        <button className="mini" title="Seek to start" onClick={() => actions?.seekTo?.(+sc.start + 0.01)}>▶</button></div>
       <label className="chk">
         <input type="checkbox" checked={!!sc.endcard} onChange={e => upd({ endcard: e.target.checked })} />
         ★ Endcard scene (all layers hide, clean screen)

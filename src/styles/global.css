@@ -34,3 +34,22 @@ body{margin:0;background:#07090f;color:#e8ecf5;font-family:'Inter',system-ui,san
 .chk input{accent-color:#ffd60a}
 input[type=range]{accent-color:#ffd60a;flex:1;min-width:60px}
 .locked .colL,.locked .colR,.locked .tlTrack,.locked .transport,.locked .stage{pointer-events:none;opacity:.6}
+
+/* --- auto-save indicator badge --- */
+.saveBadge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:5px 9px;border-radius:7px;background:#0d1320;border:1px solid #1c263c;color:#8b94a8;user-select:none;transition:all .2s ease}
+.saveBadge.saved{color:#4ade80;border-color:rgba(74,222,128,.28);background:rgba(74,222,128,.07)}
+.saveBadge.saving{color:#ffd60a;border-color:rgba(255,214,10,.35);background:rgba(255,214,10,.08)}
+.saveBadge.unsaved{color:#fb923c;border-color:rgba(251,146,60,.35);background:rgba(251,146,60,.08)}
+.saveBadge.error{color:#f87171;border-color:rgba(248,113,113,.35);background:rgba(248,113,113,.08)}
+.saveDot{display:inline-block;width:6.5px;height:6.5px;border-radius:50%;background:currentColor}
+.saveDot.pulse{animation:dotPulse 1.2s infinite ease-in-out}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+
+/* --- project menu dropdown --- */
+.projMenuWrap{position:relative}
+.projDropdown{position:absolute;top:calc(100% + 6px);left:0;background:#0d1220;border:1px solid #26314c;border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.75);padding:6px;display:flex;flex-direction:column;gap:3px;min-width:190px;z-index:1000}
+.projDropdownItem{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;border:none;background:transparent;color:#d5ddec;font-size:12.5px;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;width:100%;transition:.12s}
+.projDropdownItem:hover{background:#182236;color:#ffd60a}
+.projDropdownItem.danger:hover{background:#2a1114;color:#ff8585}
+.projDropdownDivider{height:1px;background:#1a2336;margin:4px 0}
+

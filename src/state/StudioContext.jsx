@@ -12,6 +12,7 @@ import { usePlayback } from '../hooks/usePlayback.js';
 import { useRecorder } from '../hooks/useRecorder.js';
 import { useCameraDrag } from '../hooks/useCameraDrag.js';
 import { useInkDraw } from '../hooks/useInkDraw.js';
+import { saveActiveProject, loadActiveProject, clearActiveProject } from '../engine/storage.js';
 
 const StudioContext = createContext(null);
 export const useStudio = () => useContext(StudioContext);
@@ -43,6 +44,13 @@ export function StudioProvider({ children }) {
   const [selInkId, setSelInkId] = useState(null);
   const [status, setStatus] = useState('Ready 🎬 — demo loaded. Upload your own images and make your own video.');
 
+  /* auto-save & hydration state */
+  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydratedRef = useRef(false);
+  const [saveStatus, setSaveStatus] = useState('saved'); // 'saved' | 'saving' | 'unsaved' | 'error'
+  const [lastSavedAt, setLastSavedAt] = useState(null);
+  const saveTimeoutRef = useRef(null);
+
   /* refs mirrored from state — read by the 60fps loop without re-renders */
   const projectRef = useRef(project); projectRef.current = project;
   const selIdRef = useRef(selId); selIdRef.current = selId;
@@ -64,6 +72,42 @@ export function StudioProvider({ children }) {
   const playheadRef = useRef(null);
   const seekRef = useRef(null);
   const apiRef = useRef({});
+
+  /* Restore project from IndexedDB on startup so refreshing never loses progress */
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const stored = await loadActiveProject();
+        if (stored && stored.project && active) {
+          const norm = normalize(stored.project);
+          dispatch({ type: 'project/load', project: norm });
+          if (stored.meta) {
+            if (stored.meta.selId && norm.scenes.some(s => s.id === stored.meta.selId)) {
+              setSelId(stored.meta.selId);
+              const sc = norm.scenes.find(s => s.id === stored.meta.selId);
+              if (stored.meta.selLayerId && sc && sc.layers.some(l => l.id === stored.meta.selLayerId)) {
+                setSelLayerId(stored.meta.selLayerId);
+              }
+            }
+            if (typeof stored.meta.time === 'number' && isFinite(stored.meta.time)) {
+              rt.time = Math.max(0, stored.meta.time);
+            }
+          }
+          setStatus('✨ Restored your project from auto-save');
+          if (stored.updatedAt) setLastSavedAt(new Date(stored.updatedAt));
+        }
+      } catch (err) {
+        console.warn('[storage] Failed to restore project:', err);
+      } finally {
+        if (active) {
+          isHydratedRef.current = true;
+          setIsHydrated(true);
+        }
+      }
+    })();
+    return () => { active = false; };
+  }, []);
 
   /* warm the decode cache so the first frames of playback are already drawn */
   useEffect(() => { primeImages(project); }, [project]);
@@ -127,6 +171,59 @@ export function StudioProvider({ children }) {
   /* recording must not carry an editing crosshair into the baked frames */
   useEffect(() => { rt.inkEdit.on = inkOn && !recording; }, [inkOn, recording]);
 
+  /* ---------- auto-save execution & event triggers ---------- */
+  const performSave = useCallback(async (customProject, customMeta) => {
+    if (!isHydratedRef.current) return;
+    const proj = customProject || projectRef.current;
+    if (!proj) return;
+    setSaveStatus('saving');
+    try {
+      await saveActiveProject(proj, {
+        selId: (customMeta && customMeta.selId !== undefined) ? customMeta.selId : selIdRef.current,
+        selLayerId: (customMeta && customMeta.selLayerId !== undefined) ? customMeta.selLayerId : selLayerIdRef.current,
+        time: (customMeta && typeof customMeta.time === 'number') ? customMeta.time : rt.time,
+      });
+      setSaveStatus('saved');
+      setLastSavedAt(new Date());
+    } catch (e) {
+      console.warn('Auto-save error:', e);
+      setSaveStatus('error');
+    }
+  }, [rt]);
+
+  /* Debounced auto-save whenever project changes (after initial hydration) */
+  useEffect(() => {
+    if (!isHydratedRef.current) return;
+    setSaveStatus('unsaved');
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      performSave();
+    }, 600);
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [project, performSave]);
+
+  /* Warn before navigating away if recording/exporting, and flush any pending save */
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (recordingRef.current || rt.recPhase) {
+        e.preventDefault();
+        e.returnValue = 'Recording or Export is in progress! If you leave, this progress will be lost.';
+        return e.returnValue;
+      }
+      if (isHydratedRef.current && projectRef.current) {
+        saveActiveProject(projectRef.current, {
+          selId: selIdRef.current,
+          selLayerId: selLayerIdRef.current,
+          time: rt.time,
+        }).catch(() => {});
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [rt]);
+
   /* ---------- actions ---------- */
   const pause = useCallback(() => { rt.playing = false; setPlaying(false); }, []);
   const togglePlay = useCallback(() => {
@@ -140,7 +237,11 @@ export function StudioProvider({ children }) {
   const snapPNG = useCallback(() => {
     canvasRef.current && canvasRef.current.toBlob(b => b && downloadBlob(b, 'geneseon-frame.png'));
   }, []);
-  const saveJSON = useCallback(() => { saveProjectJSON(projectRef.current); setStatus('💾 Project saved'); }, []);
+  const saveJSON = useCallback(() => {
+    saveProjectJSON(projectRef.current);
+    performSave();
+    setStatus('💾 Project saved to file');
+  }, [performSave]);
 
   /* switching ratio is a no-op while recording — resizing the canvas
      mid-capture would tear the stream and corrupt the file */
@@ -153,20 +254,35 @@ export function StudioProvider({ children }) {
   const loadJSON = useCallback(async (file) => {
     try {
       const j = JSON.parse(await file.text());
-      dispatch({ type: 'project/load', project: j });
-      setSelId(null); setSelLayerId(null); rt.time = 0;
+      const norm = normalize(j);
+      dispatch({ type: 'project/load', project: norm });
+      const firstId = norm.scenes.length ? norm.scenes[0].id : null;
+      setSelId(firstId);
+      setSelLayerId(null);
+      rt.time = 0;
+      await performSave(norm, { selId: firstId, selLayerId: null, time: 0 });
       setStatus('📂 Project loaded');
-    } catch { setStatus('❌ That file is not valid'); }
-  }, []);
-  const loadDemo = useCallback(() => {
-    dispatch({ type: 'project/load', project: demoProject() });
-    setSelId(null); setSelLayerId(null); rt.time = 0;
+    } catch {
+      setStatus('❌ That file is not valid');
+    }
+  }, [performSave, rt]);
+  const loadDemo = useCallback(async () => {
+    const demo = normalize(demoProject());
+    dispatch({ type: 'project/load', project: demo });
+    const firstId = demo.scenes.length ? demo.scenes[0].id : null;
+    setSelId(firstId);
+    setSelLayerId(null);
+    rt.time = 0;
     setStatus('🎬 Demo loaded — press ▶');
-  }, []);
-  const newProject = useCallback(() => {
+    await performSave(demo, { selId: firstId, selLayerId: null, time: 0 });
+  }, [performSave, rt]);
+  const newProject = useCallback(async () => {
     dispatch({ type: 'project/new', media: projectRef.current.media });
-    setSelId(null); setSelLayerId(null); rt.time = 0;
-  }, []);
+    setSelId(null);
+    setSelLayerId(null);
+    rt.time = 0;
+    setStatus('✨ New project created');
+  }, [rt]);
 
   /* ---------- media + layer actions ---------- */
   const sceneId = () => selIdRef.current;
@@ -262,6 +378,7 @@ export function StudioProvider({ children }) {
   Object.assign(apiRef.current, {
     togglePlay, restart, seekTo,
     startRecorderNow: recorder.startRecorderNow,
+    onTimeUpdate: recorder.onTimeUpdate,
   });
 
   /* spacebar = play/pause */
@@ -292,16 +409,23 @@ export function StudioProvider({ children }) {
     cameraDrag, inkDraw,
     inkOn, inkTool, inkColor, inkWidth, selInkId, setSelInkId,
     aspect, aspects: ASPECTS,
+    exportState: recorder.exportState,
+    saveStatus, lastSavedAt, isHydrated,
     actions: {
       togglePlay, restart, pause, seekTo, snapPNG, saveJSON, loadJSON, loadDemo, newProject,
+      forceSave: performSave,
       addMedia, addLayer, clearLayer, fillLayer,
       beginRecord: recorder.beginRecord, stopRecord: recorder.stopRecord,
+      openExportModal: recorder.openExportModal, closeExportModal: recorder.closeExportModal,
+      startExport: recorder.startExport, cancelExport: recorder.cancelExport,
       setInkOn, setInkTool, setInkColor, setInkWidth, undoInk, previewInk,
       changeAspect,
     },
   }), [project, selId, selLayerId, selSceneMemo, selLayer, playing, recording, micOn, status,
+       saveStatus, lastSavedAt, isHydrated, performSave,
        recorder, cameraDrag, inkDraw, inkOn, inkTool, inkColor, inkWidth, selInkId,
        setInkOn, setInkTool, setInkColor, setInkWidth, undoInk, previewInk, changeAspect]);
+
 
   return <StudioContext.Provider value={value}>{children}</StudioContext.Provider>;
 }

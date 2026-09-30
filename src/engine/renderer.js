@@ -63,11 +63,6 @@ export function renderFrame(ctx, t, P, rt) {
         g.addColorStop(0, 'rgba(0,0,0,' + (dim * inner * 0.92).toFixed(3) + ')');
         g.addColorStop(1, 'rgba(0,0,0,' + dim.toFixed(3) + ')');
         ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-        if ((+sc.spot || 0) > 0.03) {
-          ctx.save(); ctx.strokeStyle = accent; ctx.globalAlpha = .45; ctx.lineWidth = Math.max(2, 3 * s);
-          ctx.shadowColor = accent; ctx.shadowBlur = 20 * s;
-          ctx.beginPath(); ctx.arc(cx, cy, Math.min(W, H) * 0.139, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-        }
       }
     } else {
       const egY = H * 0.426, egR = R * 0.777;
